@@ -1,4 +1,4 @@
-# 🌧️ Projeto SuperMarket
+# 🛒 Projeto SuperMarket
 
 ---
 
