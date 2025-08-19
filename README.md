@@ -1,4 +1,4 @@
-# 🌧️ Projeto Social
+# 🌧️ Projeto SuperMarket
 
 ---
 
@@ -10,3 +10,4 @@
 - Luis Henrique Gomes Cardoso - RM 558883  
 
 ---
+
