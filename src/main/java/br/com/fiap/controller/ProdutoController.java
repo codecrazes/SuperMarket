@@ -64,7 +64,6 @@ public class ProdutoController {
                     produto.setCodigo(produtoAtualizado.getCodigo());
                     produto.setCategoria(produtoAtualizado.getCategoria());
                     produto.setPreco(produtoAtualizado.getPreco());
-                    produto.setQuantidadeEstoque(produtoAtualizado.getQuantidadeEstoque());
                     produto.setDataValidade(produtoAtualizado.getDataValidade());
                     Produto atualizado = produtoRepository.save(produto);
                     return ResponseEntity.ok(produtoAssembler.toModel(atualizado));

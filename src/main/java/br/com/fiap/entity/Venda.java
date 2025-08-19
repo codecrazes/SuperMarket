@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
 @Table(name = "TB_VENDA")
 public class Venda {
 
@@ -23,14 +22,6 @@ public class Venda {
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
-    @ManyToMany
-    @JoinTable(
-        name = "TB_VENDA_PRODUTO",
-        joinColumns = @JoinColumn(name = "venda_id"),
-        inverseJoinColumns = @JoinColumn(name = "produto_id")
-    )
-    private List<Produto> produtos;
 
     @Column(nullable = false)
     private LocalDate dataVenda;

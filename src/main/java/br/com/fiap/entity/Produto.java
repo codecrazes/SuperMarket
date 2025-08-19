@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -33,12 +31,6 @@ public class Produto {
     @Column(nullable = false)
     private Double preco;
 
-    @Column(nullable = false)
-    private Integer quantidadeEstoque;
-
     @Column(name = "data_validade")
     private LocalDate dataValidade;
-
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<MovimentacaoEstoque> movimentacoes = new ArrayList<>();
 }

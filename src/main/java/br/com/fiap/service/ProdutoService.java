@@ -36,7 +36,6 @@ public class ProdutoService {
                     p.setCodigo(produto.getCodigo());
                     p.setCategoria(produto.getCategoria());
                     p.setPreco(produto.getPreco());
-                    p.setQuantidadeEstoque(produto.getQuantidadeEstoque());
                     p.setDataValidade(produto.getDataValidade());
                     return produtoRepository.save(p);
                 })
