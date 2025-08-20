@@ -2,14 +2,14 @@ package br.com.fiap.controller;
 
 import br.com.fiap.assembler.ClienteAssembler;
 import br.com.fiap.entity.Cliente;
-import br.com.fiap.repository.ClienteRepository;
+import br.com.fiap.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -19,25 +19,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
     @Autowired
     private ClienteAssembler clienteAssembler;
 
     @GetMapping
     public CollectionModel<EntityModel<Cliente>> listarTodos() {
-        List<EntityModel<Cliente>> clientes = clienteRepository.findAll()
+        var clientes = clienteService.listarTodos()
                 .stream()
                 .map(clienteAssembler::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(clientes,
-                linkTo(methodOn(ClienteController.class).listarTodos()).withSelfRel());
+        return CollectionModel.of(
+                clientes,
+                linkTo(methodOn(ClienteController.class).listarTodos()).withSelfRel()
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Cliente>> buscarPorId(@PathVariable Long id) {
-        return clienteRepository.findById(id)
+        return clienteService.buscarPorId(id)
                 .map(clienteAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,34 +47,44 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<EntityModel<Cliente>> cadastrar(@RequestBody Cliente cliente) {
-        if (cliente.getCpf() != null && clienteRepository.findByCpf(cliente.getCpf()).isPresent()) {
+        if (cliente.getCpf() != null && clienteService.existsByCpf(cliente.getCpf())) {
             return ResponseEntity.badRequest().build();
         }
-        Cliente salvo = clienteRepository.save(cliente);
-        return ResponseEntity.ok(clienteAssembler.toModel(salvo));
+        try {
+            var salvo = clienteService.cadastrar(cliente);
+            return ResponseEntity.ok(clienteAssembler.toModel(salvo));
+        } catch (RuntimeException ex) {
+            if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("cpf")) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Cliente>> atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
-        return clienteRepository.findById(id)
-                .map(c -> {
-                    c.setNome(cliente.getNome());
-                    c.setCpf(cliente.getCpf());
-                    c.setTelefone(cliente.getTelefone());
-                    c.setEndereco(cliente.getEndereco());
-                    Cliente atualizado = clienteRepository.save(c);
-                    return ResponseEntity.ok(clienteAssembler.toModel(atualizado));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            var atualizado = clienteService.atualizar(id, cliente);
+            return ResponseEntity.ok(clienteAssembler.toModel(atualizado));
+        } catch (RuntimeException ex) {
+            if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        return clienteRepository.findById(id)
-                .map(c -> {
-                    clienteRepository.delete(c);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().<Void>build());
+        var existente = clienteService.buscarPorId(id);
+        if (existente.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            clienteService.excluir(id);
+            return ResponseEntity.noContent().build();
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

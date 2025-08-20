@@ -1,22 +1,8 @@
-nerdctl build -t supermarket-app:latest .
+sudo docker build -t supermarket-app:latest .
 
-nerdctl network create devnet
+sudo docker network create devnet
 
-nerdctl run -d --name mysql --network devnet \      
-  -e MYSQL_ROOT_PASSWORD=123 \
-  -e MYSQL_DATABASE=db \
-  -e MYSQL_USER=db \
-  -e MYSQL_PASSWORD=123 \
-  -p 3306:3306 \
-  -v mysql:/var/lib/mysql \
-  mysql:8 \
-  --character-set-server=utf8mb4 \
-  --collation-server=utf8mb4_unicode_ci
+sudo docker run -d --name mysql --network devnet -e MYSQL_ROOT_PASSWORD=123 -e MYSQL_DATABASE=db -e MYSQL_USER=db -e MYSQL_PASSWORD=123 -p 3306:3306 -v mysql:/var/lib/mysql mysql:8 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 
-nerdctl run --rm --name supermarket-app --network devnet -p 8082:8082 \
--e SPRING_DATASOURCE_URL="jdbc:mysql://mysql:3306/db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo" \
--e SPRING_DATASOURCE_USERNAME="db" \
--e SPRING_DATASOURCE_PASSWORD="123" \
--e SERVER_PORT=8082 \
-supermarket-app:latest
+sudo docker run --rm --name supermarket-app --network devnet -p 8082:8082 -e SPRING_DATASOURCE_URL="jdbc:mysql://mysql:3306/db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo" -e SPRING_DATASOURCE_USERNAME="db" -e SPRING_DATASOURCE_PASSWORD="123" -e SERVER_PORT=8082 -d supermarket-app:latest

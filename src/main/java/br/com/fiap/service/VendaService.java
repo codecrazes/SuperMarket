@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VendaService {
@@ -24,11 +25,10 @@ public class VendaService {
         return vendaRepository.findAll();
     }
 
-    /**
-     * Registra uma venda.
-     * @param clienteId id do cliente
-     * @param valorTotal valor total da venda
-     */
+    public Optional<Venda> buscarPorId(Long id) {
+        return vendaRepository.findById(id);
+    }
+
     @Transactional
     public Venda registrarVenda(Long clienteId, Double valorTotal) {
         if (valorTotal == null || valorTotal <= 0) {
@@ -48,5 +48,10 @@ public class VendaService {
         venda.setValorTotal(totalFinal);
 
         return vendaRepository.save(venda);
+    }
+
+    @Transactional
+    public void excluir(Long id) {
+        vendaRepository.deleteById(id);
     }
 }

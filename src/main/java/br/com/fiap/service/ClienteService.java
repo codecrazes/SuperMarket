@@ -22,6 +22,10 @@ public class ClienteService {
         return clienteRepository.findById(id);
     }
 
+    public boolean existsByCpf(String cpf) {
+        return clienteRepository.existsByCpf(cpf);
+    }
+
     public Cliente cadastrar(Cliente cliente) {
         if (clienteRepository.existsByCpf(cliente.getCpf())) {
             throw new RuntimeException("Cliente com este CPF já existe!");
