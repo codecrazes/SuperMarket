@@ -50,7 +50,6 @@ public class VendaService {
         return vendaRepository.save(venda);
     }
 
-    // ➕ PATCH: atualização parcial (cliente e/ou valorTotal)
     @Transactional
     public Venda atualizarParcial(Long id, Long clienteId, Double valorTotal) {
         Venda venda = vendaRepository.findById(id)
@@ -72,7 +71,6 @@ public class VendaService {
             venda.setValorTotal(totalFinal);
         }
 
-        // dataVenda permanece inalterada no PATCH
         return vendaRepository.save(venda);
     }
 

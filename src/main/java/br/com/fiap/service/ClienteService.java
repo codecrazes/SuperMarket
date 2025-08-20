@@ -33,12 +33,10 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    // PUT (atualização completa)
     public Cliente atualizar(Long id, Cliente cliente) {
         return clienteRepository.findById(id)
                 .map(c -> {
-                    // Se mudar CPF, valide duplicidade
-                    if (cliente.getCpf() != null && !cliente.getCpf().equals(c.getCpf())
+\                    if (cliente.getCpf() != null && !cliente.getCpf().equals(c.getCpf())
                             && clienteRepository.existsByCpf(cliente.getCpf())) {
                         throw new RuntimeException("Cliente com este CPF já existe!");
                     }
@@ -51,7 +49,6 @@ public class ClienteService {
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
-    // ➕ PATCH (atualização parcial)
     public Cliente atualizarParcial(Long id, Cliente patch) {
         return clienteRepository.findById(id)
                 .map(c -> {
@@ -59,7 +56,6 @@ public class ClienteService {
                         c.setNome(patch.getNome());
                     }
                     if (patch.getCpf() != null) {
-                        // Só verifica duplicidade se o CPF for alterado
                         var cpfNovo = patch.getCpf();
                         if (!cpfNovo.equals(c.getCpf()) && clienteRepository.existsByCpf(cpfNovo)) {
                             throw new RuntimeException("Cliente com este CPF já existe!");

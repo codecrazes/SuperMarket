@@ -75,7 +75,6 @@ public class ProdutoController {
         }
     }
 
-    // ➕ PATCH (atualização parcial)
     @PatchMapping("/{id}")
     public ResponseEntity<EntityModel<Produto>> atualizarParcial(@PathVariable Long id, @RequestBody Produto patch) {
         try {

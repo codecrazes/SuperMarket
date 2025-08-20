@@ -29,11 +29,9 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    // PUT (atualização completa)
     public Produto atualizar(Long id, Produto produto) {
         return produtoRepository.findById(id)
                 .map(p -> {
-                    // Se mudar código, valida duplicidade
                     if (produto.getCodigo() != null && !produto.getCodigo().equals(p.getCodigo())
                             && produtoRepository.existsByCodigo(produto.getCodigo())) {
                         throw new RuntimeException("Produto com este código já existe!");
@@ -48,7 +46,6 @@ public class ProdutoService {
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    // ➕ PATCH (atualização parcial)
     public Produto atualizarParcial(Long id, Produto patch) {
         return produtoRepository.findById(id)
                 .map(p -> {

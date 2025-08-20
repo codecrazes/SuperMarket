@@ -55,7 +55,6 @@ public class ClienteController {
             return ResponseEntity.ok(clienteAssembler.toModel(salvo));
         } catch (RuntimeException ex) {
             if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("cpf")) {
-                // Obs: se quiser mensagem no corpo, considere alterar a assinatura para ResponseEntity<?>
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.badRequest().build();
@@ -75,7 +74,6 @@ public class ClienteController {
         }
     }
 
-    // ➕ PATCH (atualização parcial)
     @PatchMapping("/{id}")
     public ResponseEntity<EntityModel<Cliente>> atualizarParcial(@PathVariable Long id, @RequestBody Cliente cliente) {
         try {

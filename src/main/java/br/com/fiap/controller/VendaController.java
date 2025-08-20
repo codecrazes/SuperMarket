@@ -58,7 +58,6 @@ public class VendaController {
         }
     }
 
-    // ➕ PATCH: atualização parcial de venda
     @PatchMapping("/{id}")
     public ResponseEntity<EntityModel<Venda>> atualizarParcial(@PathVariable Long id, @RequestBody VendaPatch patch) {
         try {
