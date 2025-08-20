@@ -49,7 +49,10 @@ public class VendaController {
         try {
             var venda = vendaService.registrarVenda(request.clienteId(), request.valorTotal());
             return ResponseEntity.ok(vendaAssembler.toModel(venda));
-        } catch (RuntimeException | IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
+            // Ex.: valorTotal <= 0
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException ex) {
             var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
             if (msg.contains("não encontrado")) {
                 return ResponseEntity.notFound().build();
@@ -63,7 +66,10 @@ public class VendaController {
         try {
             var venda = vendaService.atualizarParcial(id, patch.clienteId(), patch.valorTotal());
             return ResponseEntity.ok(vendaAssembler.toModel(venda));
-        } catch (RuntimeException | IllegalArgumentException ex) {
+        } catch (IllegalArgumentException ex) {
+            // Ex.: valorTotal <= 0 no patch
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException ex) {
             var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
             if (msg.contains("não encontrado")) {
                 return ResponseEntity.notFound().build();
