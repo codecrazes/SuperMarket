@@ -12,6 +12,20 @@ Esta apresentação demonstra o funcionamento do sistema SuperMarket, que permit
 - Luis Henrique Gomes Cardoso - RM 558883  
 
 ---
+###🔹 Pacotes utilizados e suas funções
+
+Entity → Mapeia tabelas e relacionamentos no banco.
+
+Repository → Abstrai o acesso e consultas ao banco.
+
+Service → Implementa lógica e regras de negócio.
+
+Controller → Expõe endpoints REST e manipula requisições/respostas.
+
+Assembler → Constrói modelos HATEOAS para respostas enriquecidas.
+
+---
+
 ## Configuração Inicial no Spring Initializr
 ![Imagem do projeto](imagem_git/imagem-java.jpg)
 
