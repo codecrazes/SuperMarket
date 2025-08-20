@@ -12,7 +12,7 @@ Esta apresentação demonstra o funcionamento do sistema SuperMarket, que permit
 - Luis Henrique Gomes Cardoso - RM 558883  
 
 ---
-###🔹 Pacotes utilizados e suas funções
+### 🔹 Pacotes utilizados e suas funções
 
 Entity → Mapeia tabelas e relacionamentos no banco.
 
