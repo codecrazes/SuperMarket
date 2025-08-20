@@ -33,13 +33,45 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
+    // PUT (atualização completa)
     public Cliente atualizar(Long id, Cliente cliente) {
         return clienteRepository.findById(id)
                 .map(c -> {
+                    // Se mudar CPF, valide duplicidade
+                    if (cliente.getCpf() != null && !cliente.getCpf().equals(c.getCpf())
+                            && clienteRepository.existsByCpf(cliente.getCpf())) {
+                        throw new RuntimeException("Cliente com este CPF já existe!");
+                    }
                     c.setNome(cliente.getNome());
                     c.setCpf(cliente.getCpf());
                     c.setTelefone(cliente.getTelefone());
                     c.setEndereco(cliente.getEndereco());
+                    return clienteRepository.save(c);
+                })
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+    }
+
+    // ➕ PATCH (atualização parcial)
+    public Cliente atualizarParcial(Long id, Cliente patch) {
+        return clienteRepository.findById(id)
+                .map(c -> {
+                    if (patch.getNome() != null) {
+                        c.setNome(patch.getNome());
+                    }
+                    if (patch.getCpf() != null) {
+                        // Só verifica duplicidade se o CPF for alterado
+                        var cpfNovo = patch.getCpf();
+                        if (!cpfNovo.equals(c.getCpf()) && clienteRepository.existsByCpf(cpfNovo)) {
+                            throw new RuntimeException("Cliente com este CPF já existe!");
+                        }
+                        c.setCpf(cpfNovo);
+                    }
+                    if (patch.getTelefone() != null) {
+                        c.setTelefone(patch.getTelefone());
+                    }
+                    if (patch.getEndereco() != null) {
+                        c.setEndereco(patch.getEndereco());
+                    }
                     return clienteRepository.save(c);
                 })
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));

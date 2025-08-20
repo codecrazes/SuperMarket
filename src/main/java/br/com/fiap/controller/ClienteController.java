@@ -55,7 +55,8 @@ public class ClienteController {
             return ResponseEntity.ok(clienteAssembler.toModel(salvo));
         } catch (RuntimeException ex) {
             if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("cpf")) {
-                return ResponseEntity.badRequest().body("CPF já cadastrado");
+                // Obs: se quiser mensagem no corpo, considere alterar a assinatura para ResponseEntity<?>
+                return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.badRequest().build();
         }
@@ -69,6 +70,24 @@ public class ClienteController {
         } catch (RuntimeException ex) {
             if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
                 return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // ➕ PATCH (atualização parcial)
+    @PatchMapping("/{id}")
+    public ResponseEntity<EntityModel<Cliente>> atualizarParcial(@PathVariable Long id, @RequestBody Cliente cliente) {
+        try {
+            var atualizado = clienteService.atualizarParcial(id, cliente);
+            return ResponseEntity.ok(clienteAssembler.toModel(atualizado));
+        } catch (RuntimeException ex) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("não encontrado")) {
+                return ResponseEntity.notFound().build();
+            }
+            if (msg.contains("cpf")) {
+                return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.badRequest().build();
         }

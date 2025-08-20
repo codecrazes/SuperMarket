@@ -50,7 +50,23 @@ public class VendaController {
             var venda = vendaService.registrarVenda(request.clienteId(), request.valorTotal());
             return ResponseEntity.ok(vendaAssembler.toModel(venda));
         } catch (RuntimeException | IllegalArgumentException ex) {
-            if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("não encontrado")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // ➕ PATCH: atualização parcial de venda
+    @PatchMapping("/{id}")
+    public ResponseEntity<EntityModel<Venda>> atualizarParcial(@PathVariable Long id, @RequestBody VendaPatch patch) {
+        try {
+            var venda = vendaService.atualizarParcial(id, patch.clienteId(), patch.valorTotal());
+            return ResponseEntity.ok(vendaAssembler.toModel(venda));
+        } catch (RuntimeException | IllegalArgumentException ex) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("não encontrado")) {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.badRequest().build();
@@ -68,4 +84,5 @@ public class VendaController {
     }
 
     public record VendaRequest(Long clienteId, Double valorTotal, Double desconto) {}
+    public record VendaPatch(Long clienteId, Double valorTotal) {}
 }

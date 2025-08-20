@@ -29,14 +29,48 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+    // PUT (atualização completa)
     public Produto atualizar(Long id, Produto produto) {
         return produtoRepository.findById(id)
                 .map(p -> {
+                    // Se mudar código, valida duplicidade
+                    if (produto.getCodigo() != null && !produto.getCodigo().equals(p.getCodigo())
+                            && produtoRepository.existsByCodigo(produto.getCodigo())) {
+                        throw new RuntimeException("Produto com este código já existe!");
+                    }
                     p.setNome(produto.getNome());
                     p.setCodigo(produto.getCodigo());
                     p.setCategoria(produto.getCategoria());
                     p.setPreco(produto.getPreco());
                     p.setDataValidade(produto.getDataValidade());
+                    return produtoRepository.save(p);
+                })
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+    }
+
+    // ➕ PATCH (atualização parcial)
+    public Produto atualizarParcial(Long id, Produto patch) {
+        return produtoRepository.findById(id)
+                .map(p -> {
+                    if (patch.getNome() != null) {
+                        p.setNome(patch.getNome());
+                    }
+                    if (patch.getCodigo() != null) {
+                        var novoCodigo = patch.getCodigo();
+                        if (!novoCodigo.equals(p.getCodigo()) && produtoRepository.existsByCodigo(novoCodigo)) {
+                            throw new RuntimeException("Produto com este código já existe!");
+                        }
+                        p.setCodigo(novoCodigo);
+                    }
+                    if (patch.getCategoria() != null) {
+                        p.setCategoria(patch.getCategoria());
+                    }
+                    if (patch.getPreco() != null) {
+                        p.setPreco(patch.getPreco());
+                    }
+                    if (patch.getDataValidade() != null) {
+                        p.setDataValidade(patch.getDataValidade());
+                    }
                     return produtoRepository.save(p);
                 })
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));

@@ -50,6 +50,32 @@ public class VendaService {
         return vendaRepository.save(venda);
     }
 
+    // ➕ PATCH: atualização parcial (cliente e/ou valorTotal)
+    @Transactional
+    public Venda atualizarParcial(Long id, Long clienteId, Double valorTotal) {
+        Venda venda = vendaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Venda não encontrada"));
+
+        if (clienteId != null) {
+            Cliente cliente = clienteRepository.findById(clienteId)
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+            venda.setCliente(cliente);
+        }
+
+        if (valorTotal != null) {
+            if (valorTotal <= 0) {
+                throw new IllegalArgumentException("O valor da venda deve ser maior que zero.");
+            }
+            double desconto = (valorTotal >= 200.0) ? 15.0 : 0.0;
+            double totalFinal = valorTotal - desconto;
+            venda.setDesconto(desconto);
+            venda.setValorTotal(totalFinal);
+        }
+
+        // dataVenda permanece inalterada no PATCH
+        return vendaRepository.save(venda);
+    }
+
     @Transactional
     public void excluir(Long id) {
         vendaRepository.deleteById(id);

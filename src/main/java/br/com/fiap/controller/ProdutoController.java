@@ -50,7 +50,8 @@ public class ProdutoController {
             var salvo = produtoService.cadastrar(produto);
             return ResponseEntity.ok(produtoAssembler.toModel(salvo));
         } catch (RuntimeException ex) {
-            if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("código")) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("código")) {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.badRequest().build();
@@ -63,8 +64,30 @@ public class ProdutoController {
             var atualizado = produtoService.atualizar(id, produtoAtualizado);
             return ResponseEntity.ok(produtoAssembler.toModel(atualizado));
         } catch (RuntimeException ex) {
-            if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("não encontrado")) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("não encontrado")) {
                 return ResponseEntity.notFound().build();
+            }
+            if (msg.contains("código")) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // ➕ PATCH (atualização parcial)
+    @PatchMapping("/{id}")
+    public ResponseEntity<EntityModel<Produto>> atualizarParcial(@PathVariable Long id, @RequestBody Produto patch) {
+        try {
+            var atualizado = produtoService.atualizarParcial(id, patch);
+            return ResponseEntity.ok(produtoAssembler.toModel(atualizado));
+        } catch (RuntimeException ex) {
+            var msg = ex.getMessage() != null ? ex.getMessage().toLowerCase() : "";
+            if (msg.contains("não encontrado")) {
+                return ResponseEntity.notFound().build();
+            }
+            if (msg.contains("código")) {
+                return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.badRequest().build();
         }
