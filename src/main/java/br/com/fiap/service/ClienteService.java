@@ -36,7 +36,7 @@ public class ClienteService {
     public Cliente atualizar(Long id, Cliente cliente) {
         return clienteRepository.findById(id)
                 .map(c -> {
-\                    if (cliente.getCpf() != null && !cliente.getCpf().equals(c.getCpf())
+                    if (cliente.getCpf() != null && !cliente.getCpf().equals(c.getCpf())
                             && clienteRepository.existsByCpf(cliente.getCpf())) {
                         throw new RuntimeException("Cliente com este CPF já existe!");
                     }
