@@ -12,7 +12,7 @@ Esta apresentação demonstra o funcionamento do sistema SuperMarket, que permit
 - Luis Henrique Gomes Cardoso - RM 558883  
 
 ---
-##Configuração Inicial no Spring Initializr
+## Configuração Inicial no Spring Initializr
 ![Imagem do projeto](imagem_git/imagem-java.jpg)
 
 ---
@@ -52,6 +52,7 @@ curl -X PUT http://34.86.191.111:8082/clientes/1 \
 Excluir cliente
 curl -X DELETE http://34.86.191.111:8082/clientes/1
 
+---
 📌 Produtos (/produtos)
 Listar todos
 curl -X GET http://34.86.191.111:8082/produtos
@@ -91,6 +92,7 @@ curl -X GET http://34.86.191.111:8082/vendas
 Buscar por ID
 curl -X GET http://34.86.191.111:8082/vendas/1
 
+---
 Criar venda
 
 ⚠️ Precisa de um cliente já cadastrado (clienteId existente).
