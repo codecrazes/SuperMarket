@@ -55,7 +55,7 @@ public class ClienteController {
             return ResponseEntity.ok(clienteAssembler.toModel(salvo));
         } catch (RuntimeException ex) {
             if (ex.getMessage() != null && ex.getMessage().toLowerCase().contains("cpf")) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().body("CPF já cadastrado");
             }
             return ResponseEntity.badRequest().build();
         }
@@ -84,7 +84,7 @@ public class ClienteController {
             clienteService.excluir(id);
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 }
